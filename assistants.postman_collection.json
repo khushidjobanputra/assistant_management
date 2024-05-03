@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Khushi2\",\r\n    \"mobile\": \"9356905923\",\r\n    \"email\": \"khushi2@gmail.com\",\r\n    \"salary\": 100000,\r\n    \"city\": \"mumbai\",\r\n    \"country\": \"india\",\r\n    \"department\": \"comps\",\r\n    \"role\": \"swe\"\r\n}",
+					"raw": "{\r\n    \"name\": \"Khushi\",\r\n    \"mobile\": \"9356912932\",\r\n    \"email\": \"khushi@gmail.com\",\r\n    \"salary\": 10000,\r\n    \"city\": \"mumbai\",\r\n    \"country\": \"india\",\r\n    \"department\": \"comps\",\r\n    \"role\": \"swe\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -29,7 +29,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://127.0.0.1:5000/assistant/2"
+				"url": "http://127.0.0.1:5000/assistant/6"
 			},
 			"response": []
 		},
@@ -47,7 +47,7 @@
 						}
 					}
 				},
-				"url": "http://127.0.0.1:5000/assistant/2"
+				"url": "http://127.0.0.1:5000/assistant/8"
 			},
 			"response": []
 		},
@@ -56,7 +56,7 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"url": "http://127.0.0.1:5000/assistant/2"
+				"url": "http://127.0.0.1:5000/assistant/1"
 			},
 			"response": []
 		},

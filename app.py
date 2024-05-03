@@ -1,26 +1,8 @@
 from flask import Flask, request, jsonify
-import sqlite3
+from models import connect_db
+from helper import is_valid_email, is_valid_mobile, assistant_exists
 
 app = Flask(__name__)
-
-# establish connection with SQLite database
-def connect_db():
-    conn = sqlite3.connect('assistants.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS assistants (
-                          id INTEGER PRIMARY KEY AUTOINCREMENT,
-                          name TEXT,
-                          mobile TEXT,
-                          email TEXT,
-                          salary REAL,
-                          city TEXT,
-                          country TEXT,
-                          department TEXT,
-                          role TEXT
-                      )''')
-    conn.commit()
-    return conn
 
 # create a new assistant
 @app.route('/assistant', methods=['POST'])
@@ -28,6 +10,25 @@ def create_assistant():
     conn = connect_db()
     cursor = conn.cursor()
     data = request.get_json()
+    
+    # Check if a user with the same email or mobile already exists
+    cursor.execute("SELECT * FROM assistants WHERE email = ? OR mobile = ?", (data['email'], data['mobile']))
+    existing_user = cursor.fetchone()
+    if existing_user:
+        conn.close()
+        return jsonify({'error': 'User already exists with the same email or mobile number'}), 400
+
+    # Validate email format
+    if not is_valid_email(data['email']):
+        conn.close()
+        return jsonify({'error': 'Invalid email format'}), 400
+    
+    # Validate mobile number format
+    if not is_valid_mobile(data['mobile']):
+        conn.close()
+        return jsonify({'error': 'Mobile number must be 10 digits long'}), 400
+    
+    # If no existing user found, then create a new assistant
     cursor.execute("INSERT INTO assistants (name, mobile, email, salary, city, country, department, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                    (data['name'], data['mobile'], data['email'], data['salary'], data['city'], data['country'], data['department'], data['role']))
     assistant_id = cursor.lastrowid
@@ -35,7 +36,7 @@ def create_assistant():
     conn.close()
     return jsonify({'assistant_id': assistant_id}), 201
 
-# Get details of all assistant
+# Get details of all assistants
 @app.route('/assistants', methods=['GET'])
 def get_all_assistants():
     conn = connect_db()
@@ -67,6 +68,11 @@ def update_assistant(assistant_id):
     conn = connect_db()
     cursor = conn.cursor()
     data = request.get_json()
+    
+    if not assistant_exists(conn, assistant_id):
+        conn.close()
+        return jsonify({'error': 'Assistant with the specified ID does not exist'}), 404
+    
     cursor.execute("UPDATE assistants SET name=?, mobile=?, email=?, salary=?, city=?, country=?, department=?, role=? WHERE id=?",
                    (data['name'], data['mobile'], data['email'], data['salary'], data['city'], data['country'], data['department'], data['role'], assistant_id))
     conn.commit()
@@ -78,6 +84,11 @@ def update_assistant(assistant_id):
 def delete_assistant(assistant_id):
     conn = connect_db()
     cursor = conn.cursor()
+    
+    if not assistant_exists(conn, assistant_id):
+        conn.close()
+        return jsonify({'error': 'Assistant with the specified ID does not exist'}), 404
+    
     cursor.execute("DELETE FROM assistants WHERE id=?", (assistant_id,))
     conn.commit()
     conn.close()
