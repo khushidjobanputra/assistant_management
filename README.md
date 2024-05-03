@@ -28,7 +28,7 @@ To run the application locally, follow these steps:
 
 Follow these steps to use the Postman collection:
 
-1. **Import the Collection**: Import the provided Postman collection file (`Assistant_Management_API.postman_collection.json`) into your Postman application.
+1. **Import the Collection**: Import the provided Postman collection file (`assistants.postman_collection.json`) into your Postman application.
 
 2. **Start the Flask Application**: Ensure that the Flask application is running locally by following the steps mentioned above.
 
