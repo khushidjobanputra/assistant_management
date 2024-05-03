@@ -1,0 +1,10 @@
+venv/
+
+__pycache__/
+
+# Ignore SQLite database file
+*.db
+
+# Ignore system files created by your operating system
+.DS_Store
+Thumbs.db
